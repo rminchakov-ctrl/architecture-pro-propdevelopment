@@ -1,0 +1,33 @@
+@startuml C4_Container
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+title Умный дом - Контейнер
+
+Person(owner, "Собственник")
+Person(customer, "Сотрудник УК")
+Person(guest, "Гость")
+
+System_Boundary(system, "Система умного дома") {
+    System(mobile_app, "МП собственника", "Настройки, информирование о госте")
+    System(admin_app, "МП админское", "Добавление собственников, настройка, удаленная помощь")
+    System(core, "Основная система", "Функционал умного дома")
+    System(core_db, "Хранилище основной системы", "Данные системы")
+    System(system_gate, "Шлюз взаимодействия с основной системой", "Список собственников")
+    System(partner_gate, "Шлюз взаимодействия с партнерским API", "Функционал партнерского API")
+}
+
+System_Ext(partner_api , "Партнерская система")
+
+Rel(owner, mobile_app, "Настраивает. Получает информацию о госте. Открывает шлагбаум, домофон.")
+Rel(customer, admin_app, "Настраивает.")
+Rel(guest, core, "Использует шлагбаум, домофон.")
+
+Rel(mobile_app, core, "Обмен данными", "HTTPS")
+Rel(admin_app, core, "Обмен данными", "HTTPS")
+Rel(core, system_gate, "Запрос данных о собственнике", "HTTPS")
+Rel(core, core_db, "Обмен данными", "SQL")
+
+Rel(core, partner_gate, "Взаимодействие с партнерским API", "HTTPS")
+Rel(partner_gate, partner_api, "Взаимодействие с партнерским API", "HTTPS")
+
+@enduml
