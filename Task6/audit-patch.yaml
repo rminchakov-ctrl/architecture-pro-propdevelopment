@@ -1,0 +1,13 @@
+spec:
+  containers:
+  - name: kube-apiserver
+    volumeMounts:
+    - name: audit-policy
+      mountPath: /etc/kubernetes/audit-policy.yaml
+      readOnly: true
+      subPath: audit-policy.yaml
+  volumes:
+  - name: audit-policy
+    hostPath:
+      path: /etc/kubernetes/audit-policy.yaml
+      type: File

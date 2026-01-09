@@ -1,0 +1,40 @@
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  name: k8sreadonlyfsnohostpath
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sReadOnlyFSNoHostPath
+        listKind: K8sReadOnlyFSNoHostPathList
+        plural: k8sreadonlyfsnohostpath
+        singular: k8sreadonlyfsnohostpath
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package k8sreadonlyfsnohostpath
+
+        violation[{"msg": msg}] {
+            # Проверяем, что все контейнеры имеют readOnlyRootFilesystem: true
+            not all_containers_readonly(input.review.object.spec.containers)
+            msg := "Все контейнеры должны иметь readOnlyRootFilesystem: true"
+        }
+
+        violation[{"msg": msg}] {
+            # Проверяем, что не используется hostPath
+            has_hostpath_volume(input.review.object.spec.volumes)
+            msg := "Запрещено использование томов типа hostPath"
+        }
+
+        # Вспомогательная функция: проверяет, что все контейнеры имеют readOnlyRootFilesystem: true
+        all_containers_readonly(containers) {
+            container := containers[_]
+            container.securityContext.readOnlyRootFilesystem == true
+        }
+
+        # Вспомогательная функция: проверяет наличие томов hostPath
+        has_hostpath_volume(volumes) {
+            volume := volumes[_]
+            volume.hostPath
+        }
