@@ -30,7 +30,7 @@ if [[ ! -f "$FILE" ]]; then
     exit 1
 fi
 
-FILTER_CMD="cat \"$FILE\""
+FILTER_CMD="sudo cat \"$FILE\""
 
 while [[ $# -gt 0 ]]; do
     case $1 in
