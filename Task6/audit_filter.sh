@@ -34,44 +34,44 @@ FILTER_CMD="cat \"$FILE\""
 while [[ $# -gt 0 ]]; do
     case $1 in
         -v|--verb)
-            FILTER_CMD="$FILTER_CMD | grep -E '\"verb\":.*\"$2\"'"
+            FILTER_CMD="$FILTER_CMD | grep -E '\\\"verb\\\":[^,]*\\\"$2\\\"'"
             shift 2
             ;;
         -s|--status)
-            FILTER_CMD="$FILTER_CMD | grep -E '\"code\":.*$2'"
+            FILTER_CMD="$FILTER_CMD | grep -E '\\\"code\\\":[^,]*$2'"
             shift 2
             ;;
         -u|--user)
-            FILTER_CMD="$FILTER_CMD | grep -E '\"username\":.*\"$2\"'"
+            FILTER_CMD="$FILTER_CMD | grep -E '\\\"username\\\":[^,]*\\\"$2\\\"'"
             shift 2
             ;;
         -n|--namespace)
-            FILTER_CMD="$FILTER_CMD | grep -E '\"namespace\":.*\"$2\"'"
+            FILTER_CMD="$FILTER_CMD | grep -E '\\\"namespace\\\":[^,]*\\\"$2\\\"'"
             shift 2
             ;;
         -r|--resource)
-            FILTER_CMD="$FILTER_CMD | grep -E '\"resource\":.*\"$2\"'"
+            FILTER_CMD="$FILTER_CMD | grep -E '\\\"resource\\\":[^,]*\\\"$2\\\"'"
             shift 2
             ;;
         -a|--allowed)
-            FILTER_CMD="$FILTER_CMD | grep -E '\"decision\":.*\"allow\"'"
+            FILTER_CMD="$FILTER_CMD | grep -E '\\\"decision\\\":[^,]*\\\"allow\\\"'"
             shift
             ;;
         -d|--denied)
-            FILTER_CMD="$FILTER_CMD | grep -E '\"decision\":.*\"forbid\"'"
+            FILTER_CMD="$FILTER_CMD | grep -E '\\\"decision\\\":[^,]*\\\"forbid\\\"'"
             shift
             ;;
         -g|--group)
-            FILTER_CMD="$FILTER_CMD | grep -E '\"groups\":.*$2'"
+            FILTER_CMD="$FILTER_CMD | grep -E '\\\"groups\\\":[^]]*$2'"
             shift 2
             ;;
         -i|--ip)
-            FILTER_CMD="$FILTER_CMD | grep -E '\"sourceIPs\":.*$2'"
+            FILTER_CMD="$FILTER_CMD | grep -E '\\\"sourceIPs\\\":[^]]*$2'"
             shift 2
             ;;
         -h|--help)
             usage
-            exit", "0
+            exit 0
             ;;
         *)
             echo "Неизвестный аргумент: $1"
