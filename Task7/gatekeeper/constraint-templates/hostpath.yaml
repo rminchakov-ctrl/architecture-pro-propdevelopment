@@ -7,9 +7,6 @@ spec:
     spec:
       names:
         kind: K8sReadOnlyFSNoHostPath
-        listKind: K8sReadOnlyFSNoHostPathList
-        plural: k8sreadonlyfsnohostpath
-        singular: k8sreadonlyfsnohostpath
   targets:
     - target: admission.k8s.gatekeeper.sh
       rego: |
@@ -17,24 +14,19 @@ spec:
 
         violation[{"msg": msg}] {
             # Проверяем, что все контейнеры имеют readOnlyRootFilesystem: true
-            not all_containers_readonly(input.review.object.spec.containers)
+            not all_containers_readonly
             msg := "Все контейнеры должны иметь readOnlyRootFilesystem: true"
         }
 
         violation[{"msg": msg}] {
             # Проверяем, что не используется hostPath
-            has_hostpath_volume(input.review.object.spec.volumes)
-            msg := "Запрещено использование томов типа hostPath"
+            volume := input.review.object.spec.volumes[_]
+            volume.hostPath
+            msg := sprintf("Запрещено использование томов типа hostPath: %v", [volume.name])
         }
 
         # Вспомогательная функция: проверяет, что все контейнеры имеют readOnlyRootFilesystem: true
-        all_containers_readonly(containers) {
-            container := containers[_]
+        all_containers_readonly {
+            container := input.review.object.spec.containers[_]
             container.securityContext.readOnlyRootFilesystem == true
-        }
-
-        # Вспомогательная функция: проверяет наличие томов hostPath
-        has_hostpath_volume(volumes) {
-            volume := volumes[_]
-            volume.hostPath
         }
