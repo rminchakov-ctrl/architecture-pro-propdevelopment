@@ -1,0 +1,24 @@
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: k8spspprivilegedcontainer
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sPSPPrivilegedContainer
+      validation:
+        openAPIV3Schema:
+          properties:
+            message:
+              type: string
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package k8spspprivilegedcontainer
+        violation[{"msg": msg}] {
+            containers = input.review.object.spec.template.spec.containers
+            c := containers[_]
+            c.securityContext.privileged
+            msg := sprintf("Контейнер %v не должен работать в привилегированном режиме", [c.name])
+        }

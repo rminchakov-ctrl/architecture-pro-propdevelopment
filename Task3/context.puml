@@ -1,0 +1,21 @@
+@startuml C4_Context
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+title Умный дом - Контекст
+
+Person(owner, "Собственник")
+Person(customer, "Сотрудник УК")
+Person(guest, "Гость")
+
+System_Boundary(system, "Система умного дома") {
+    System(core, "Основная система", "Функционал умного дома")
+}
+
+System_Ext(partner_api , "Партнерская система")
+
+Rel(owner, core, "Настраивает. Получает информацию о госте. Открывает шлагбаум, домофон.")
+Rel(customer, core, "Настраивает.")
+Rel(guest, core, "Использует шлагбаум, домофон.")
+Rel(core, partner_api, "Взаимодействие с партнерским API", "HTTPS")
+
+@enduml
